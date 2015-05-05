@@ -80,9 +80,17 @@ $(document).ready(function () {
 
   // method that we will use to update the control based on feature properties passed
   info.update = function (props) {
-    console.log(props);
-    this._div.innerHTML = '<h4>ZFU</h4>' +  (props ?
-      '<abbr title="Zone Franche Urbaine">ZFU</abbr> de ' + props.commune + '<br/>97% du coût normal (1211 €)'
+    var title = ''
+    if (props !== undefined){
+      if (props.numzfu !== undefined){
+        var title = 'ZFU';
+      }
+      else{
+        var title = 'ZRR';
+      }
+    }
+    this._div.innerHTML = '<h4>ZRR/ZFU</h4>' +  (props ?
+      title + ' de ' + props.commune + '<br/>97% du coût normal (1211 €)'
       : 'Survolez une zone pour connaitre la base d\'éxonération');
   };
 
@@ -123,23 +131,36 @@ L.TopoJSON = L.GeoJSON.extend({
 
 var topoLayer = new L.TopoJSON();
 
-$.getJSON('http://localhost:8000/zoneville/api/beta/zrr/mapservice')
+$.getJSON('http://apicarto.coremaps.com/zoneville/api/beta/zrr/mapservice')
   .done(addTopoData);
+
+function handleLayer(layer){  
+
+    layer.setStyle({
+      fillColor: '#E31A1C',
+      weight: 2,
+      opacity: 1,
+      color: 'white',
+      dashArray: '3',
+      fillOpacity: 0.7
+    });
+  info.update(layer.feature.properties);
+    layer.on({
+      mouseover: highlightFeature,
+      mouseout: resetHighlightTopo,
+      click: zoomToFeature
+    });
+}
 
 function addTopoData(topoData){  
   topoLayer.addData(topoData);
   topoLayer.addTo(map);
+  topoLayer.eachLayer(handleLayer);
+
 }
-  //   $.ajax({
-  //   url: 'http://localhost:8000/zoneville/api/beta/zrr/mapservice',
-  //   datatype: 'json',
-  //   jsonCallback: 'getJson',
-  //   success: loadGeoJson
-  // });
   function highlightFeature(e) {
-    var layer = e.target
-    info.update(layer.feature.properties);
     var layer = e.target;
+    info.update(layer.feature.properties);
 
     layer.setStyle({
       weight: 5,
@@ -175,6 +196,19 @@ return bounds;
     geojsonLayerWells.resetStyle(e.target);
     info.update();
   }
+  function resetHighlightTopo(e) {
+    var layer = e.target;
+    layer.setStyle({
+      fillColor: '#E31A1C',
+      weight: 2,
+      opacity: 1,
+      color: 'white',
+      dashArray: '3',
+      fillOpacity: 0.7
+    });
+    info.update();
+  }
+
   function zoomToFeature(e) {
     map.fitBounds(e.target.getBounds());
   }
