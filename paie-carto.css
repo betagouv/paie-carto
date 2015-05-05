@@ -167,7 +167,10 @@ button, input, optgroup, select, textarea {
   color: black;
 }
 
-#map { height: 180px; }
+#map { height: 320px; width:800px;
+     float: none;
+     margin-left: auto;
+     margin-right: auto;}
 
 .info {
     padding: 6px 8px;
