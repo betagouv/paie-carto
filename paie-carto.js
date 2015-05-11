@@ -48,7 +48,6 @@ $(document).ready(function () {
       {x:data.geometry.coordinates[0],
         y:data.geometry.coordinates[1]
       }).done(function (data){
-        console.log(data);
         if (data.result) {
           var source = $("#zonage-template").html();
           var template = Handlebars.compile(source);
@@ -84,13 +83,16 @@ $(document).ready(function () {
     if (props !== undefined){
       if (props.numzfu !== undefined){
         var title = 'ZFU';
+        var exo = 97;
       }
       else{
         var title = 'ZRR';
+        var exo = 95;
       }
     }
+    var cout = parseFloat(document.querySelector('[data-source=salsuperbrut]').innerText.replace(/,/, '.') , 2) * exo/100;
     this._div.innerHTML = '<h4>ZRR/ZFU</h4>' +  (props ?
-      title + ' de ' + props.commune + '<br/>97% du coût normal (1211 €)'
+      title + ' de ' + props.commune + '<br/>'+ exo +'% du coût normal ('+ cout.toFixed(2) +' €)'
       : 'Survolez une zone pour connaitre la base d\'éxonération');
   };
 
@@ -98,14 +100,13 @@ $(document).ready(function () {
   function style(feature) {
     return {
       fillColor: '#FC4E2A',
-      weight: 2,
+      weight: 1,
       opacity: 1,
       color: 'white',
-      dashArray: '3',
+      dashArray: '0',
       fillOpacity: 0.7
     };
   }       
-  window.debug = map;
 
   $.ajax({
     url: 'http://apicarto.coremaps.com/zoneville/api/beta/zfu/mapservice',
@@ -115,26 +116,26 @@ $(document).ready(function () {
   });
 
   var geojson;
-L.TopoJSON = L.GeoJSON.extend({  
-  addData: function(jsonData) {    
-    if (jsonData.type === "Topology") {
-      for (key in jsonData.objects) {
-        geojson = topojson.feature(jsonData, jsonData.objects[key]);
-        L.GeoJSON.prototype.addData.call(this, geojson);
+  L.TopoJSON = L.GeoJSON.extend({  
+    addData: function(jsonData) {    
+      if (jsonData.type === "Topology") {
+        for (key in jsonData.objects) {
+          geojson = topojson.feature(jsonData, jsonData.objects[key]);
+          L.GeoJSON.prototype.addData.call(this, geojson);
+        }
+      }    
+      else {
+        L.GeoJSON.prototype.addData.call(this, jsonData);
       }
-    }    
-    else {
-      L.GeoJSON.prototype.addData.call(this, jsonData);
-    }
-  }  
-});
+    }  
+  });
 
-var topoLayer = new L.TopoJSON();
+  var topoLayer = new L.TopoJSON();
 
-$.getJSON('http://apicarto.coremaps.com/zoneville/api/beta/zrr/mapservice')
+  $.getJSON('http://apicarto.coremaps.com/zoneville/api/beta/zrr/mapservice')
   .done(addTopoData);
 
-function handleLayer(layer){  
+  function handleLayer(layer){  
 
     layer.setStyle({
       fillColor: '#E31A1C',
@@ -144,20 +145,19 @@ function handleLayer(layer){
       dashArray: '3',
       fillOpacity: 0.7
     });
-  info.update(layer.feature.properties);
+    info.update(layer.feature.properties);
     layer.on({
       mouseover: highlightFeature,
       mouseout: resetHighlightTopo,
       click: zoomToFeature
     });
-}
+  }
+  function addTopoData(topoData){  
+    topoLayer.addData(topoData);
+    topoLayer.addTo(map);
+    topoLayer.eachLayer(handleLayer);
 
-function addTopoData(topoData){  
-  topoLayer.addData(topoData);
-  topoLayer.addTo(map);
-  topoLayer.eachLayer(handleLayer);
-
-}
+  }
   function highlightFeature(e) {
     var layer = e.target;
     info.update(layer.feature.properties);
@@ -173,10 +173,10 @@ function addTopoData(topoData){
       layer.bringToFront();
     }
   }
-function BoundingBox(){
-var bounds = map.getBounds().getSouthWest().lng + "," +     map.getBounds().getSouthWest().lat + "," + map.getBounds().getNorthEast().lng + "," + map.getBounds().getNorthEast().lat;
-return bounds;
-}
+  function BoundingBox(){
+    var bounds = map.getBounds().getSouthWest().lng + "," +     map.getBounds().getSouthWest().lat + "," + map.getBounds().getNorthEast().lng + "," + map.getBounds().getNorthEast().lat;
+    return bounds;
+  }
   function onEachFeature(feature, layer) {
     layer.on({
       mouseover: highlightFeature,
@@ -216,7 +216,7 @@ return bounds;
   map.invalidateSize(false);
 
   map.on('moveend', function(){
-        console.log(map.getZoom());
-        console.log(BoundingBox());
-    });
+    console.log(map.getZoom());
+    console.log(BoundingBox());
+  });
 })
