@@ -44,7 +44,7 @@ $(document).ready(function () {
     console.log(data.geometry);
     L.marker([data.geometry.coordinates[1],data.geometry.coordinates[0]]).addTo(map);
     map.setView(new L.LatLng(data.geometry.coordinates[1],data.geometry.coordinates[0]), 12);
-    $.get("http://apicarto.coremaps.com/zoneville/api/beta/zfu",
+    $.get("http://localhost:8000/zoneville/api/beta/zfu",
       {x:data.geometry.coordinates[0],
         y:data.geometry.coordinates[1]
       }).done(function (data){
@@ -61,12 +61,22 @@ $(document).ready(function () {
   var osm = new L.TileLayer('http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
     { attribution: 'Map data © <a href="http://openstreetmap.org">OpenStreetMap</a> contributors' }
     );
+
+  var zone = L.tileLayer.wms("http://apicarto.coremaps.com/geoserver/wms/", {
+    layers: 'zrr',
+    tiled: true,
+    format: 'image/png',
+    transparent: true,
+    attribution: "SGMAP"
+});
+  var stamen = new L.StamenTileLayer("toner");
   var map = new L.Map('map', {
     center: [50.691903,3.165524],
     zoom: 10,
-    layers: [osm]
+    layers: [stamen]
   });
 
+  zone.addTo(map);
   var info = L.control({
     position: 'topright'
   });
@@ -79,21 +89,33 @@ $(document).ready(function () {
 
   // method that we will use to update the control based on feature properties passed
   info.update = function (props) {
-    var title = ''
     if (props !== undefined){
+      props.title = '';
       if (props.numzfu !== undefined){
-        var title = 'ZFU';
-        var exo = 97;
+        props.title = 'ZFU - territoire entrepreneur';
+        props.nom_comm = props.commune;
+        props.exo = 'Vous bénéficiez d\'exonérations fiscales.';
       }
       else{
-        var title = 'ZRR';
-        var exo = 95;
+        props.exo = 'Vous bénéficiez d\'exonérations fiscales et sociales';
+        if (props.ber == true)
+          props.title += ' BER ';
+        if (props.zrd == true)
+          props.title += ' ZRD ';
+        if (props.zrr == true)
+          props.title += ' ZRR ';
       }
+      var source = $("#zonage-info").html();
+      var template = Handlebars.compile(source);
+      this._div.innerHTML = template(props);
     }
-    var cout = parseFloat(document.querySelector('[data-source=salsuperbrut]').innerText.replace(/,/, '.') , 2) * exo/100;
-    this._div.innerHTML = '<h4>ZRR/ZFU</h4>' +  (props ?
-      title + ' de ' + props.commune + '<br/>'+ exo +'% du coût normal ('+ cout.toFixed(2) +' €)'
-      : 'Survolez une zone pour connaitre la base d\'éxonération');
+    else{
+      this._div.innerHTML = 'Survolez une zone pour connaitre la base d\'éxonération';
+    }
+
+    /**this._div.innerHTML = '<h4>ZRD/BER/ZRR/ZFU - territoire entrepreneur</h4>' +  (props ?
+      title + ' de ' + props.nom_comm + '<br/>'+ exo +'% du coût normal ('+ cout.toFixed(2) +' €)'
+      : 'Survolez une zone pour connaitre la base d\'éxonération');**/
   };
 
   info.addTo(map);
@@ -106,7 +128,43 @@ $(document).ready(function () {
       dashArray: '0',
       fillOpacity: 0.7
     };
-  }       
+  }
+
+  var index_com = [];
+  var communesgeojson = {type:"FeatureCollection",features:[]};
+  var communelayer = L.geoJson(communesgeojson, {
+          color: "#000",
+          opacity: 10,
+          fillColor: '#fff',
+
+        })
+  communelayer.addTo(map);
+
+  map.on('mousemove', function(e) {
+    console.log(e.latlng);
+    console.log(e);
+    $.getJSON('http://apicarto.coremaps.com/zoneville/api/beta/zrr/mapservice', {lat:e.latlng.lat, lng:e.latlng.lng}).done(
+      function (data){
+        console.log(data);
+        window.debug = index_com;
+        if (data.status){
+          console.log(index_com);
+          console.log(index_com.indexOf(data.feature.properties.insee))
+          if (index_com.indexOf(data.feature.properties.insee) == -1){
+            console.log("nouveau");
+
+            console.log(index_com.indexOf(data.feature.properties.insee))
+            index_com.push(data.feature.properties.insee);
+            communesgeojson.features.push(data.feature);
+            communelayer.clearLayers();
+            console.log(communesgeojson);
+            communelayer.addData(communesgeojson);
+            communelayer.addTo(map);
+            communelayer.eachLayer(handleLayerCommune);
+          }
+        }
+      });
+});
 
   $.ajax({
     url: 'http://apicarto.coremaps.com/zoneville/api/beta/zfu/mapservice',
@@ -115,49 +173,46 @@ $(document).ready(function () {
     success: loadGeoJson
   });
 
-  var geojson;
-  L.TopoJSON = L.GeoJSON.extend({  
-    addData: function(jsonData) {    
-      if (jsonData.type === "Topology") {
-        for (key in jsonData.objects) {
-          geojson = topojson.feature(jsonData, jsonData.objects[key]);
-          L.GeoJSON.prototype.addData.call(this, geojson);
-        }
-      }    
-      else {
-        L.GeoJSON.prototype.addData.call(this, jsonData);
-      }
-    }  
-  });
-
-  var topoLayer = new L.TopoJSON();
-
-  $.getJSON('http://apicarto.coremaps.com/zoneville/api/beta/zrr/mapservice')
-  .done(addTopoData);
-
-  function handleLayer(layer){  
+  function handleLayerCommune(layer){  
 
     layer.setStyle({
-      fillColor: '#E31A1C',
+      fillColor: 'white',
+      weight: 0,
+      opacity: 0,
+      color: 'white',
+      fillOpacity: 0
+    });
+    info.update(layer.feature.properties);
+    layer.on({
+      mouseover: highlightFeatureCommune,
+      mouseout: resetHighlightCommune,
+      click: zoomToFeature
+    });
+  }
+    function resetHighlightCommune(e) {
+    communelayer.resetStyle(e.target);
+    info.update();
+  }
+  function highlightFeatureCommune(e) {
+    var layer = e.target;
+    info.update(layer.feature.properties);
+    layer.setStyle({
+      fillColor: 'white',
       weight: 2,
       opacity: 1,
       color: 'white',
       dashArray: '3',
-      fillOpacity: 0.7
+      fillOpacity: 0
     });
-    info.update(layer.feature.properties);
-    layer.on({
-      mouseover: highlightFeature,
-      mouseout: resetHighlightTopo,
-      click: zoomToFeature
-    });
-  }
-  function addTopoData(topoData){  
-    topoLayer.addData(topoData);
-    topoLayer.addTo(map);
-    topoLayer.eachLayer(handleLayer);
 
+
+    if (!L.Browser.ie && !L.Browser.opera) {
+      layer.bringToFront();
+
+    }
   }
+ 
+
   function highlightFeature(e) {
     var layer = e.target;
     info.update(layer.feature.properties);
@@ -194,18 +249,6 @@ $(document).ready(function () {
   
   function resetHighlight(e) {
     geojsonLayerWells.resetStyle(e.target);
-    info.update();
-  }
-  function resetHighlightTopo(e) {
-    var layer = e.target;
-    layer.setStyle({
-      fillColor: '#E31A1C',
-      weight: 2,
-      opacity: 1,
-      color: 'white',
-      dashArray: '3',
-      fillOpacity: 0.7
-    });
     info.update();
   }
 
