@@ -41,7 +41,6 @@ $(document).ready(function () {
     displayKey:'label',
     source:engine.ttAdapter(),
   }).on('typeahead:selected', function(event, data){            
-    console.log(data.geometry);
     L.marker([data.geometry.coordinates[1],data.geometry.coordinates[0]]).addTo(map);
     map.setView(new L.LatLng(data.geometry.coordinates[1],data.geometry.coordinates[0]), 12);
     $.get("http://localhost:8000/zoneville/api/beta/zfu",
@@ -94,22 +93,42 @@ $(document).ready(function () {
       if (props.numzfu !== undefined){
         props.title = 'ZFU - territoire entrepreneur';
         props.nom_comm = props.commune;
+        var old_sal = parseFloat(document.querySelector('[data-source=salsuperbrut]').innerText.replace(/,/, '.') , 2);
+        $("select[name='zone_franche_urbaine'] option[value='true']").attr('selected', 'selected');
         props.exo = 'Vous bénéficiez d\'exonérations fiscales.';
+        var new_sal = parseFloat(document.querySelector('[data-source=salsuperbrut]').innerText.replace(/,/, '.') , 2);
       }
       else{
         props.exo = 'Vous bénéficiez d\'exonérations fiscales et sociales';
-        if (props.ber == true)
+        if (props.ber == true){
           props.title += ' BER ';
-        if (props.zrd == true)
-          props.title += ' ZRD ';
-        if (props.zrr == true)
+          var old_sal = parseFloat(document.querySelector('[data-source=salsuperbrut]').innerText.replace(/,/, '.') , 2);
+          $("select[name='bassin_emploi_redynamiser'] option[value='true']").attr('selected', 'selected');
+          var new_sal = parseFloat(document.querySelector('[data-source=salsuperbrut]').innerText.replace(/,/, '.') , 2);
+        }
+        if (props.zrr == true){
           props.title += ' ZRR ';
+          var old_sal = parseFloat(document.querySelector('[data-source=salsuperbrut]').innerText.replace(/,/, '.') , 2);
+          $("select[name='zone_revitalisation_rurale'] option[value='true']").attr('selected', 'selected');
+          var new_sal = parseFloat(document.querySelector('[data-source=salsuperbrut]').innerText.replace(/,/, '.') , 2);
+        }
+        if (props.zrd == true){
+          props.title += ' ZRD ';
+          var old_sal = parseFloat(document.querySelector('[data-source=salsuperbrut]').innerText.replace(/,/, '.') , 2);
+          $("select[name='zone_restructuration_defense'] option[value='true']").attr('selected', 'selected');
+          var new_sal = parseFloat(document.querySelector('[data-source=salsuperbrut]').innerText.replace(/,/, '.') , 2);
+        }
       }
+      props.cout = (old_sal/new_sal) * 100;
       var source = $("#zonage-info").html();
       var template = Handlebars.compile(source);
       this._div.innerHTML = template(props);
     }
     else{
+      $("select[name='zone_franche_urbaine'] option[value='false']").attr('selected', 'selected');
+      $("select[name='bassin_emploi_redynamiser'] option[value='false']").attr('selected', 'selected');
+      $("select[name='zone_revitalisation_rurale'] option[value='false']").attr('selected', 'selected');
+      $("select[name='zone_restructuration_defense'] option[value='false']").attr('selected', 'selected');
       this._div.innerHTML = 'Survolez une zone pour connaitre la base d\'éxonération';
     }
 
@@ -141,23 +160,14 @@ $(document).ready(function () {
   communelayer.addTo(map);
 
   map.on('mousemove', function(e) {
-    console.log(e.latlng);
-    console.log(e);
     $.getJSON('http://apicarto.coremaps.com/zoneville/api/beta/zrr/mapservice', {lat:e.latlng.lat, lng:e.latlng.lng}).done(
       function (data){
-        console.log(data);
         window.debug = index_com;
         if (data.status){
-          console.log(index_com);
-          console.log(index_com.indexOf(data.feature.properties.insee))
           if (index_com.indexOf(data.feature.properties.insee) == -1){
-            console.log("nouveau");
-
-            console.log(index_com.indexOf(data.feature.properties.insee))
             index_com.push(data.feature.properties.insee);
             communesgeojson.features.push(data.feature);
             communelayer.clearLayers();
-            console.log(communesgeojson);
             communelayer.addData(communesgeojson);
             communelayer.addTo(map);
             communelayer.eachLayer(handleLayerCommune);
@@ -259,7 +269,5 @@ $(document).ready(function () {
   map.invalidateSize(false);
 
   map.on('moveend', function(){
-    console.log(map.getZoom());
-    console.log(BoundingBox());
   });
 })

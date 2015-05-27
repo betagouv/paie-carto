@@ -24,9 +24,9 @@
   </div>
 </script>
 <script id="zonage-info" type="text/x-handlebars-template">
-<h4>ZRD/BER/ZRR/ZFU - territoire entrepreneur</h4>
-<span>{{title}} de {{nom_comm}}</span><br/>
-<span>{{exo}}</span>
+<h4>{{title}} de {{nom_comm}}</h4>
+<span>{{exo}}</span><br>
+<span>Vous allez payer {{cout}}% du brut.</span>
 </script>
 
   <div class="site-wrapper">
@@ -86,7 +86,7 @@
     <div id="page3" class="inner cover collapse">
       <h1 class="cover-heading">Information embauche</h1>
  <section id="input">
-      <form action="http://openfisca.sgmap.fr/api/2/formula/accident_du_travail+famille+fnal+versement_transport+agff_salarie+agirc_salarie+apec_salarie+arrco_salarie+chomage_salarie+cotisation_exceptionnelle_temporaire_salarie+vieillesse_plafonnee_salarie+vieillesse_deplafonnee_salarie+mmid_salarie+csg_deductible_salaire+mhsup+csg_imposable_salaire+crds_salaire+salaire_imposable+salaire_net_a_payer+salsuperbrut+ags+agff_employeur+apec_employeur+arrco_employeur+chomage_employeur+cotisation_exceptionnelle_temporaire_employeur+vieillesse_deplafonnee_employeur+vieillesse_plafonnee_employeur+allocations_temporaires_invalidite+mmid_employeur+cotisations_employeur_main_d_oeuvre+contribution_developpement_apprentissage+contribution_solidarite_autonomie+formation_professionnelle+participation_effort_construction+taxe_apprentissage+taxe_salaires+agirc_employeur+contribution_exceptionnelle_solidarite+ircantec_employeur+ircantec_salarie+exoneration_cotisations_employeur_zfu+exoneration_cotisations_employeur_zrr+exoneration_cotisations_employeur_zrd+allegement_fillon+exoneration_cotisations_employeur_apprenti+exoneration_cotisations_employeur_stagiaire+exoneration_cotisations_employeur_jei" method="GET">
+      <form action="http://openfisca.sgmap.fr/api/2/formula/accident_du_travail+famille+fnal+versement_transport+agff_salarie+agirc_salarie+apec_salarie+arrco_salarie+chomage_salarie+cotisation_exceptionnelle_temporaire_salarie+vieillesse_plafonnee_salarie+vieillesse_deplafonnee_salarie+mmid_salarie+csg_deductible_salaire+mhsup+csg_imposable_salaire+crds_salaire+salaire_imposable+salaire_net_a_payer+salsuperbrut+ags+agff_employeur+apec_employeur+arrco_employeur+chomage_employeur+cotisation_exceptionnelle_temporaire_employeur+vieillesse_deplafonnee_employeur+vieillesse_plafonnee_employeur+allocations_temporaires_invalidite+mmid_employeur+cotisations_employeur_main_d_oeuvre+contribution_developpement_apprentissage+contribution_solidarite_autonomie+formation_professionnelle+participation_effort_construction+taxe_apprentissage+taxe_salaires+agirc_employeur+contribution_exceptionnelle_solidarite+ircantec_employeur+ircantec_salarie+exoneration_cotisations_employeur_zfu+exoneration_cotisations_employeur_zrr+exoneration_cotisations_employeur_zrd+allegement_fillon+exoneration_cotisations_employeur_apprenti+exoneration_cotisations_employeur_stagiaire+exoneration_cotisations_employeur_jei+zone_revitalisation_rurale+bassin_emploi_redynamiser+zone_restructuration_defense" method="GET">
         <div>
           <select data-sets=".employer_type@textContent">
             <option value="entreprise">Mon entreprise</option>
@@ -146,8 +146,10 @@
           du statut jeune entreprise innovante.
         </div>
         <div id="debug_zone" class="hidden">
-        <select name="zone_franche_urbaine"><option value="true">zfu</option><option value="false">pas zfu</option>></select>
-                <select name="zone_revitalisation_rurale"><option value="true">zrr</option><option value="false">pas zrr</option>></select>
+        <select name="zone_franche_urbaine"><option value="true">zfu</option><option selected="selected" value="false">pas zfu</option>></select>
+                <select name="zone_revitalisation_rurale"><option value="true">zrr</option><option selected="selected" value="false">pas zrr</option>></select>
+        <select name="zone_restructuration_defense"><option value="true">zrd</option><option selected="selected" value="false">pas zrd</option>></select>
+                <select name="bassin_emploi_redynamiser"><option value="true">ber</option><option selected="selected" value="false">pas ber</option>></select>
                 </div>
         <noscript>
           <input type="submit" value="Combien cela va-t-il coûter ?">
