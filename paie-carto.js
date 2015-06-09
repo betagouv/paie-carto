@@ -89,41 +89,58 @@ $(document).ready(function () {
   // method that we will use to update the control based on feature properties passed
   info.update = function (props) {
     if (props !== undefined){
+      var targetUrl;
+
       props.title = '';
       if (props.numzfu !== undefined){
         props.title = 'ZFU - territoire entrepreneur';
         props.nom_comm = props.commune;
-        var old_sal = parseFloat(document.querySelector('[data-source=salsuperbrut]').innerText.replace(/,/, '.') , 2);
-        $("select[name='zone_franche_urbaine'] option[value='true']").attr('selected', 'selected');
         props.exo = 'Vous bénéficiez d\'exonérations fiscales.';
-        var new_sal = parseFloat(document.querySelector('[data-source=salsuperbrut]').innerText.replace(/,/, '.') , 2);
+        targetUrl = Embauche.OpenFisca.buildURL({ zone_franche_urbaine: true });
       }
       else{
         props.exo = 'Vous bénéficiez d\'exonérations fiscales et sociales';
         if (props.ber == true){
           props.title += ' BER ';
-          var old_sal = parseFloat(document.querySelector('[data-source=salsuperbrut]').innerText.replace(/,/, '.') , 2);
-          $("select[name='bassin_emploi_redynamiser'] option[value='true']").attr('selected', 'selected');
-          var new_sal = parseFloat(document.querySelector('[data-source=salsuperbrut]').innerText.replace(/,/, '.') , 2);
+          targetUrl = Embauche.OpenFisca.buildURL({ bassin_emploi_redynamiser: true });
         }
         if (props.zrr == true){
           props.title += ' ZRR ';
-          var old_sal = parseFloat(document.querySelector('[data-source=salsuperbrut]').innerText.replace(/,/, '.') , 2);
-          $("select[name='zone_revitalisation_rurale'] option[value='true']").attr('selected', 'selected');
-          var new_sal = parseFloat(document.querySelector('[data-source=salsuperbrut]').innerText.replace(/,/, '.') , 2);
+          targetUrl = Embauche.OpenFisca.buildURL({ zone_revitalisation_rurale: true });
         }
         if (props.zrd == true){
           props.title += ' ZRD ';
-          var old_sal = parseFloat(document.querySelector('[data-source=salsuperbrut]').innerText.replace(/,/, '.') , 2);
-          $("select[name='zone_restructuration_defense'] option[value='true']").attr('selected', 'selected');
-          var new_sal = parseFloat(document.querySelector('[data-source=salsuperbrut]').innerText.replace(/,/, '.') , 2);
+          targetUrl = Embauche.OpenFisca.buildURL({ zone_restructuration_defense: true });
         }
       }
-      props.salaire = new_sal;
-      props.cout = (old_sal/new_sal) * 100;
-      var source = $("#zonage-info").html();
-      var template = Handlebars.compile(source);
-      this._div.innerHTML = template(props);
+
+      var old_sal = parseFloat(document.querySelector('[data-source=salsuperbrut]').innerText.replace(/,/, '.') , 2);
+
+      // old_sal = window.lastResult.salsuperbrut;
+
+      var request = new XMLHttpRequest();
+
+      request.open('get', targetUrl);
+
+      request.onload = (function() {
+        if (request.status != 200)
+          throw request;
+
+        var data = JSON.parse(request.responseText);
+        new_sal = data.values.salsuperbrut;
+
+        props.salaire = new_sal.toFixed(2);
+        props.cout = Math.round((old_sal / new_sal) * 100);
+        var source = $("#zonage-info").html();
+        var template = Handlebars.compile(source);
+        this._div.innerHTML = template(props);
+      }).bind(this);
+
+      request.onerror = function() {
+        throw request;
+      }
+
+      request.send();
     }
     else{
       $("select[name='zone_franche_urbaine'] option[value='false']").attr('selected', 'selected');
