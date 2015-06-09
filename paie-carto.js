@@ -43,7 +43,7 @@ $(document).ready(function () {
   }).on('typeahead:selected', function(event, data){            
     L.marker([data.geometry.coordinates[1],data.geometry.coordinates[0]]).addTo(map);
     map.setView(new L.LatLng(data.geometry.coordinates[1],data.geometry.coordinates[0]), 12);
-    $.get("http://localhost:8000/zoneville/api/beta/zfu",
+    $.get("http://apicarto.coremaps.com/zoneville/api/beta/zfu",
       {x:data.geometry.coordinates[0],
         y:data.geometry.coordinates[1]
       }).done(function (data){
