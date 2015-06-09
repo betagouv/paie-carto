@@ -119,6 +119,7 @@ $(document).ready(function () {
           var new_sal = parseFloat(document.querySelector('[data-source=salsuperbrut]').innerText.replace(/,/, '.') , 2);
         }
       }
+      props.salaire = new_sal;
       props.cout = (old_sal/new_sal) * 100;
       var source = $("#zonage-info").html();
       var template = Handlebars.compile(source);
