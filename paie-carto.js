@@ -130,7 +130,7 @@ $(document).ready(function () {
         new_sal = data.values.salsuperbrut;
 
         props.salaire = new_sal.toFixed(2);
-        props.cout = Math.round((old_sal / new_sal) * 100);
+        props.cout = Math.round((new_sal / old_sal) * 100);
         var source = $("#zonage-info").html();
         var template = Handlebars.compile(source);
         this._div.innerHTML = template(props);
