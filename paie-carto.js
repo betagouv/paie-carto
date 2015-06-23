@@ -114,9 +114,7 @@ $(document).ready(function () {
         }
       }
 
-      var old_sal = parseFloat(document.querySelector('[data-source=salsuperbrut]').innerText.replace(/,/, '.') , 2);
-
-      // old_sal = window.lastResult.salsuperbrut;
+      var old_sal = parseFloat(document.querySelector('[data-source=salsuperbrut]').textContent.replace(/,/, '.') , 2);
 
       var request = new XMLHttpRequest();
 
