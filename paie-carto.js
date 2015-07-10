@@ -82,7 +82,7 @@ function style(feature) {
   };
 }
 
-var geojsonURL = 'http://localhost:8080/tests/{z}/{x}/{y}.geojson';
+var geojsonURL = 'http://apicarto.coremaps.com/tiles/communes/{z}/{x}/{y}.geojson';
 var geojsonTileLayer = new L.TileLayer.GeoJSON(geojsonURL, {
   clipTiles: true,
   unique: function (feature) {
