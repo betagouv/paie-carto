@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html>
+
 <head>
   <meta charset="utf-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -9,25 +10,25 @@
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css">
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap-theme.min.css">
   <link rel="stylesheet" type="text/css" href="css/typeaheadjs.css">
-   <link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet-0.7.3/leaflet.css" />
+  <link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet-0.7.3/leaflet.css" />
   <link rel="stylesheet" href="paie-carto.css">
 </head>
+
 <body>
-<script id="zonage-template" type="text/x-handlebars-template">
-  <div class="result">
-    <h1>{{title}}</h1>
-    <span class="zonage">
-      {{#result}}
-        Vous être en Zone Franche Urbaine.
-      {{/result}}
-    </span>
-  </div>
-</script>
-<script id="zonage-info" type="text/x-handlebars-template">
-<h4>{{title}} de {{nom_comm}}</h4>
-<span>{{exo}}</span><br>
-<span>Le coût total de l'employé embauché ici sera de {{salaire}}&nbsp;€ ({{cout}}% du brut).</span>
-</script>
+  <script id="zonage-template" type="text/x-handlebars-template">
+    <div class="result">
+      <h1>{{title}}</h1>
+      <span class="zonage">
+        {{#result}} Vous être en Zone Franche Urbaine. {{/result}}
+      </span>
+    </div>
+  </script>
+  <script id="zonage-info" type="text/x-handlebars-template">
+    <h4>{{title}} de {{nom_comm}}</h4>
+    <span>{{exo}}</span>
+    <br>
+    <span>Le coût total de l'employé embauché ici sera de {{salaire}}&nbsp;€ ({{cout}}% du brut).</span>
+  </script>
 
   <div class="site-wrapper">
 
@@ -41,7 +42,7 @@
             <nav>
               <ul class="nav masthead-nav">
                 <li id="maccueil" class="active"><a href="#">Accueil</a></li>
-                <li id= "madresse"><a href="#">Adresse</a></li>
+                <li id="madresse"><a href="#">Adresse</a></li>
                 <li id="msimulateur"><a href="#">Simulateur</a></li>
               </ul>
             </nav>
@@ -63,17 +64,24 @@
           <div class="row">
             <div class="col-lg-6">
               <div class="input-group">
-                <span class="input-group-addon" id="basic-addon1"><span class="glyphicon glyphicon-briefcase" aria-collapse="true"></span></span>
+                <span class="input-group-addon" id="basic-addon1">
+                  <span class="glyphicon glyphicon-briefcase" aria-collapse="true"></span>
+                </span>
                 <input type="text" class="form-control" placeholder="Siret" aria-describedby="basic-addon1">
               </div>
-            </div><!-- /.col-lg-6 -->
+            </div>
+            <!-- /.col-lg-6 -->
             <div class="col-lg-6">
               <div id="adresse" class="input-group">
-                <span class="input-group-addon" id="basic-addon2"><span class="glyphicon glyphicon-home" aria-collapse="true"></span></span>
+                <span class="input-group-addon" id="basic-addon2">
+                  <span class="glyphicon glyphicon-home" aria-collapse="true"></span>
+                </span>
                 <input type="text" class="form-control typeahead" placeholder="Adresse" aria-describedby="basic-addon2">
               </div>
-            </div><!-- /.col-lg-6 -->
-          </div><!-- /.row -->
+            </div>
+            <!-- /.col-lg-6 -->
+          </div>
+          <!-- /.row -->
           <div id="error"></div>
           <div id="information"></div>
           <div class="clearfix" style="padding-bottom: 20px;"></div>
@@ -82,131 +90,34 @@
           </p>
         </div>
 
-    </div>
-    <div id="page3" class="inner cover collapse">
-      <h1 class="cover-heading">Information embauche</h1>
- <section id="input">
-      <form action="http://openfisca.sgmap.fr/api/2/formula/accident_du_travail+famille+fnal+versement_transport+agff_salarie+agirc_salarie+apec_salarie+arrco_salarie+chomage_salarie+cotisation_exceptionnelle_temporaire_salarie+vieillesse_plafonnee_salarie+vieillesse_deplafonnee_salarie+mmid_salarie+csg_deductible_salaire+mhsup+csg_imposable_salaire+crds_salaire+salaire_imposable+salaire_net_a_payer+salsuperbrut+ags+agff_employeur+apec_employeur+arrco_employeur+chomage_employeur+cotisation_exceptionnelle_temporaire_employeur+vieillesse_deplafonnee_employeur+vieillesse_plafonnee_employeur+allocations_temporaires_invalidite+mmid_employeur+cotisations_employeur_main_d_oeuvre+contribution_developpement_apprentissage+contribution_solidarite_autonomie+formation_professionnelle+participation_effort_construction+taxe_apprentissage+taxe_salaires+agirc_employeur+contribution_exceptionnelle_solidarite+ircantec_employeur+ircantec_salarie+exoneration_cotisations_employeur_zfu+exoneration_cotisations_employeur_zrr+exoneration_cotisations_employeur_zrd+allegement_fillon+exoneration_cotisations_employeur_apprenti+exoneration_cotisations_employeur_stagiaire+exoneration_cotisations_employeur_jei+zone_revitalisation_rurale+bassin_emploi_redynamiser+zone_restructuration_defense" method="GET">
-        <div>
-          <select data-sets=".employer_type@textContent">
-            <option value="entreprise">Mon entreprise</option>
-            <option value="association">Mon association</option>
-            <option value="établissement" disabled>Mon établissement public</option>
-            <option value="foyer" disabled>Moi, comme particulier,</option>
-          </select>
+      </div>
+      <div id="page3" class="inner cover collapse">
+        <h1 class="cover-heading">Information embauche</h1>
+        <script type="text/javascript" src="https://rawgit.com/sgmap/cout-embauche/gh-pages/dist/cout-embauche-widget.js">
+        </script>
+        <div id="map"></div>
+      </div>
 
-          de
-          <input name="effectif_entreprise" id="effectif_entreprise" type="number" min="0" placeholder="1" value="1" max="99999">
-          <label for="effectif_entreprise" title="En équivalents temps pleins : un mi-temps vaut 0,5, par exemple.">salariés</label>
 
-          souhaite rémunérer un.e
-          <select data-provides="employee">
-            <option value="">salarié.e</option>
-            <option value="stagiaire">stagiaire</option>
-            <option value="apprenti">apprenti.e</option>
-            <option disabled>aide à domicile</option>
-            <option disabled>intermittent.e du spectacle</option>
-          </select>
-
-          <input type="hidden" name="contrat_de_travail_debut" value="2015-01-01"/>
-
-          en statut
-          <select name="type_sal">
-            <option value="prive_non_cadre">non-cadre</option>
-            <option value="prive_cadre">cadre</option>
-          </select>
-
-          à hauteur de
-          <input name="salaire_de_base" id="salaire" type="number" min="0" max="9999999" placeholder="1445,38" value="1445.38"><label for="salaire">&nbsp;€</label>
-
-          <select data-sets="#salaire@name">
-            <option value="salaire_de_base">brut</option>
-            <option disabled value="salaire_net_a_payer">net</option>
-          </select>
-
-          <select hidden name="allegement_fillon_mode_recouvrement">
-            <option value="progressif" selected="selected">progressive</option>
-            <option value="fin_d_annee">en fin d'année</option>
-            <option value="anticipe_regularisation_fin_de_periode">anticipée</option>
-          </select>
-
-          par
-          <select data-provides="period">
-            <option disabled>an</option>
-            <option>mois</option>
-            <option disabled>jour</option>
-            <option disabled>heure</option>
-          </select>.
+      <div class="mastfoot ">
+        <div class="inner ">
         </div>
 
-        <div>
-          Mon <span class="employer_type">entreprise</span>
-          <select name="jeune_entreprise_innovante">
-            <option value="false">ne dispose pas</option>
-            <option value="true">dispose</option>
-          </select>
-          du statut jeune entreprise innovante.
-        </div>
-        <div id="debug_zone" class="hidden">
-        <select name="zone_franche_urbaine"><option value="true">zfu</option><option selected="selected" value="false">pas zfu</option>></select>
-                <select name="zone_revitalisation_rurale"><option value="true">zrr</option><option selected="selected" value="false">pas zrr</option>></select>
-        <select name="zone_restructuration_defense"><option value="true">zrd</option><option selected="selected" value="false">pas zrd</option>></select>
-                <select name="bassin_emploi_redynamiser"><option value="true">ber</option><option selected="selected" value="false">pas ber</option>></select>
-                </div>
-        <noscript>
-          <input type="submit" value="Combien cela va-t-il coûter ?">
-        </noscript>
-      </form>
-    </section>
-
-    <section id="result">
-      <p>
-        Le coût total de l'employé sera de
-        <span data-source="salsuperbrut" title="Salaire super-brut">…</span>&nbsp;€
-        par <span data-source="period">mois</span>
-        pour mon <span class="employer_type">entreprise</span>.
-      </p>
-      <p>
-        Mon <span data-source="employee">salarié.e</span>
-        touchera <span data-source="salaire_net_a_payer" title="Salaire net">…</span>&nbsp;€
-        par <span data-source="period">mois</span> et sera imposable à hauteur de <span data-source="salaire_imposable">…</span>&nbsp;€.
-      </p>
-    </section>
-
-        </form>
-      </section>
-      <div id="map"></div>
-    </div>
-
-
-    <div class="mastfoot">
-      <div class="inner">
       </div>
 
     </div>
 
   </div>
 
-</div>
-
-<script type="text/javascript" src='https://code.jquery.com/jquery-2.1.3.js'></script>
-<script type='text/javascript' src='https://cdnjs.cloudflare.com/ajax/libs/knockout/3.3.0/knockout-min.js'></script>
-<script type='text/javascript' src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js"></script>
-<script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/typeahead.js/0.10.4/typeahead.bundle.min.js"></script>
-<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/handlebars.js/3.0.2/handlebars.js"></script>
-    <script type="text/javascript" src="lib/index.js"></script>
-    <script type="text/javascript" src="lib/ui.js"></script>
-    <script type="text/javascript" src="lib/openfisca.js"></script>
-<script src="http://d3js.org/topojson.v1.min.js"></script>
-
-    <script type="text/javascript" src="lib/createTest.js"></script>
-
-    <script type="text/javascript" src="lib/details.polyfill.js"></script>
-<script type="text/javascript" src="lib/createTest.js"></script>
- <script src="http://cdn.leafletjs.com/leaflet-0.7.3/leaflet.js"></script>
-<script type="text/javascript" src="http://maps.stamen.com/js/tile.stamen.js?v1.3.0"></script>
-<script type="text/javascript" src="lib/TileLayer.GeoJSON.js"></script>
-<script type='text/javascript' src="paie-carto.js"></script>
+  <script type="text/javascript " src='https://code.jquery.com/jquery-2.1.3.js'></script>
+  <script type='text/javascript' src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js "></script>
+  <script type="text/javascript " src="//cdnjs.cloudflare.com/ajax/libs/typeahead.js/0.10.4/typeahead.bundle.min.js "></script>
+  <script type="text/javascript " src="https://cdnjs.cloudflare.com/ajax/libs/handlebars.js/3.0.2/handlebars.js "></script>
+  <script src="http://cdn.leafletjs.com/leaflet-0.7.3/leaflet.js "></script>
+  <script type="text/javascript " src="http://maps.stamen.com/js/tile.stamen.js?v1.3.0 "></script>
+  <script type="text/javascript " src="lib/TileLayer.GeoJSON.js "></script>
+  <script type='text/javascript' src="paie-carto.js "></script>
 
 </body>
+
 </html>
