@@ -52,13 +52,6 @@ body {
   margin-right: auto;
   margin-left: auto;
 }
-
-/* Padding for spacing */
-
-.inner {
-  padding: 30px;
-}
-
 /*
  * Header
  */
@@ -173,4 +166,11 @@ button, input, optgroup, select, textarea {
 .info h4 {
   margin: 0 0 5px;
   color: #777;
+}
+body {
+  padding-top: 50px;
+}
+.center {
+  padding: 40px 15px;
+  text-align: center;
 }

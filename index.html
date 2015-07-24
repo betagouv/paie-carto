@@ -30,81 +30,77 @@
     <span>Le coût total de l'employé embauché ici sera de {{salaire}}&nbsp;€ ({{cout}}% du brut).</span>
   </script>
 
-  <div class="site-wrapper">
-
-    <div class="site-wrapper-inner">
-
-      <div class="cover-container">
-
-        <div class="masthead clearfix">
-          <div class="inner">
-            <h3 class="masthead-brand">SGMAP</h3>
-            <nav>
-              <ul class="nav masthead-nav">
-                <li id="maccueil" class="active"><a href="#">Accueil</a></li>
-                <li id="madresse"><a href="#">Adresse</a></li>
-                <li id="msimulateur"><a href="#">Simulateur</a></li>
-              </ul>
-            </nav>
-          </div>
-        </div>
-
-        <div id="page1" class="inner cover">
-          <h1 class="cover-heading">Simulateur d'embauche</h1>
-          <p class="lead">Bienvenue sur le simulateur d'embauche.</p>
-
-          <p class="lead">
-            <a id="next1" href="#" class="btn btn-lg btn-default">Suivant</a>
-          </p>
-        </div>
-
-        <div id="page2" class="inner cover collapse">
-          <h1 class="cover-heading">Votre adresse</h1>
-          <p class="lead">Entrez votre numéro de SIRET ou votre adresse.</p>
-          <div class="row">
-            <div class="col-lg-6">
-              <div class="input-group">
-                <span class="input-group-addon" id="basic-addon1">
-                  <span class="glyphicon glyphicon-briefcase" aria-collapse="true"></span>
-                </span>
-                <input type="text" class="form-control" placeholder="Siret" aria-describedby="basic-addon1">
-              </div>
-            </div>
-            <!-- /.col-lg-6 -->
-            <div class="col-lg-6">
-              <div id="adresse" class="input-group">
-                <span class="input-group-addon" id="basic-addon2">
-                  <span class="glyphicon glyphicon-home" aria-collapse="true"></span>
-                </span>
-                <input type="text" class="form-control typeahead" placeholder="Adresse" aria-describedby="basic-addon2">
-              </div>
-            </div>
-            <!-- /.col-lg-6 -->
-          </div>
-          <!-- /.row -->
-          <div id="error"></div>
-          <div id="information"></div>
-          <div class="clearfix" style="padding-bottom: 20px;"></div>
-          <p class="lead">
-            <a id="next2" href="#" class="btn btn-lg btn-default">Suivant</a>
-          </p>
-        </div>
-
+  <nav class="navbar navbar-inverse navbar-fixed-top">
+    <div class="container">
+      <div class="navbar-header">
+        <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+          <span class="sr-only">Toggle navigation</span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+        </button>
+        <a class="navbar-brand" href="#">Project name</a>
       </div>
-      <div id="page3" class="inner cover collapse">
-        <h1 class="cover-heading">Information embauche</h1>
-        <script type="text/javascript" src="https://rawgit.com/sgmap/cout-embauche/gh-pages/dist/cout-embauche-widget.js">
+      <div id="navbar" class="collapse navbar-collapse">
+        <ul class="nav navbar-nav">
+          <li id="maccueil" class="active"><a href="#">Accueil</a></li>
+          <li id="madresse"><a href="#about">Adresse</a></li>
+          <li id="msimulateur"><a href="#contact">Simulateur</a></li>
+        </ul>
+      </div>
+      <!--/.nav-collapse -->
+    </div>
+  </nav>
+  <div class="container">
+
+    <div id="page1" class="center inner cover">
+      <h1 class="cover-heading">Simulateur d'embauche</h1>
+      <p class="lead">Bienvenue sur le simulateur d'embauche.</p>
+
+      <p class="lead">
+        <a id="next1" href="#" class="btn btn-lg btn-default">Suivant</a>
+      </p>
+    </div>
+
+    <div id="page2" class="inner cover collapse">
+      <h1 class="cover-heading">Votre adresse</h1>
+      <p class="lead">Entrez votre numéro de SIRET ou votre adresse.</p>
+      <div class="row">
+        <div class="col-lg-6">
+          <div class="input-group">
+            <span class="input-group-addon" id="basic-addon1">
+              <span class="glyphicon glyphicon-briefcase" aria-collapse="true"></span>
+            </span>
+            <input type="text" class="form-control" placeholder="Siret" aria-describedby="basic-addon1">
+          </div>
+        </div>
+        <!-- /.col-lg-6 -->
+        <div class="col-lg-6">
+          <div id="adresse" class="input-group">
+            <span class="input-group-addon" id="basic-addon2">
+              <span class="glyphicon glyphicon-home" aria-collapse="true"></span>
+            </span>
+            <input type="text" class="form-control typeahead" placeholder="Adresse" aria-describedby="basic-addon2">
+          </div>
+        </div>
+        <!-- /.col-lg-6 -->
+      </div>
+      <!-- /.row -->
+      <div id="error"></div>
+      <div id="information"></div>
+      <div class="clearfix" style="padding-bottom: 20px;"></div>
+      <p class="lead">
+        <a id="next2" href="#" class="btn btn-lg btn-default">Suivant</a>
+      </p>
+    </div>
+
+    <div id="page3" class="inner cover collapse">
+      <h1 class="cover-heading">Information embauche</h1>
+      <div class="container-embauche">
+        <script type="text/javascript" src="lib/cout-embauche-widget.js">
         </script>
-        <div id="map"></div>
       </div>
-
-
-      <div class="mastfoot ">
-        <div class="inner ">
-        </div>
-
-      </div>
-
+      <div id="map"></div>
     </div>
 
   </div>

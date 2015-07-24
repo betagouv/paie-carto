@@ -1,12 +1,14 @@
-$(document).ready(function() {
-  $('#next1').click(function() {
+"use strict";
+
+$(document).ready(function () {
+  $('#next1').click(function () {
     $("#maccueil").removeClass("active");
     $("#madresse").addClass("active");
     $('#page1').hide();
     $('#page2').fadeIn('slow');
   });
 
-  $('#next2').click(function() {
+  $('#next2').click(function () {
     $("#madresse").removeClass("active");
     $("#simulateur").addClass("active");
     $('#page2').hide();
@@ -14,7 +16,7 @@ $(document).ready(function() {
     map.invalidateSize(false);
   });
 
-  $('#next3').click(function() {
+  $('#next3').click(function () {
     $("#simulateur").removeClass("active");
     $("#resultat").addClass("active");
     $('#page3').hide();
@@ -24,8 +26,8 @@ $(document).ready(function() {
   var engine = new Bloodhound({
     remote: {
       url: 'http://api-adresse.data.gouv.fr/search/?q=%QUERY',
-      filter: function(list) {
-        return $.map(list.features, function(adresse) {
+      filter: function filter(list) {
+        return $.map(list.features, function (adresse) {
           return {
             label: adresse.properties.label,
             geometry: adresse.geometry
@@ -33,9 +35,8 @@ $(document).ready(function() {
         });
       }
     },
-    datumTokenizer: function(datum) {
+    datumTokenizer: function datumTokenizer(datum) {
       return Bloodhound.tokenizers.whitespace(d);
-
     },
     queryTokenizer: Bloodhound.tokenizers.whitespace
   });
@@ -44,14 +45,14 @@ $(document).ready(function() {
 
   $('#adresse .typeahead').typeahead(null, {
     displayKey: 'label',
-    source: engine.ttAdapter(),
-  }).on('typeahead:selected', function(event, data) {
+    source: engine.ttAdapter()
+  }).on('typeahead:selected', function (event, data) {
     L.marker([data.geometry.coordinates[1], data.geometry.coordinates[0]]).addTo(map);
     map.setView(new L.LatLng(data.geometry.coordinates[1], data.geometry.coordinates[0]), 12);
     $.get("http://apicarto.coremaps.com/zoneville/api/beta/zfu", {
       x: data.geometry.coordinates[0],
       y: data.geometry.coordinates[1]
-    }).done(function(data) {
+    }).done(function (data) {
       if (data.result) {
         var source = $("#zonage-template").html();
         var template = Handlebars.compile(source);
@@ -59,15 +60,15 @@ $(document).ready(function() {
         $('#information').html(html);
         $('#information').show();
       }
-    })
+    });
   });
 
-  hash = function(s) {
-    return s.split("").reduce(function(a, b) {
-      a = ((a << 5) - a) + b.charCodeAt(0);
-      return a & a
+  var hash = function (s) {
+    return s.split("").reduce(function (a, b) {
+      a = (a << 5) - a + b.charCodeAt(0);
+      return a & a;
     }, 0);
-  }
+  };
 
   var osm = new L.TileLayer('http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
     attribution: 'Map data © <a href="http://openstreetmap.org">OpenStreetMap</a> contributors'
@@ -90,11 +91,11 @@ $(document).ready(function() {
       fillOpacity: 0.7
     };
   }
-
+  var geojsonLayerZfu;
   var geojsonURL = 'http://apicarto.coremaps.com/tiles/communes/{z}/{x}/{y}.geojson';
   var geojsonTileLayer = new L.TileLayer.GeoJSON(geojsonURL, {
     clipTiles: true,
-    unique: function(feature) {
+    unique: function unique(feature) {
       return feature.id;
     }
   }, {
@@ -112,15 +113,15 @@ $(document).ready(function() {
     zrd: '',
     ber: ''
   };
-  var sal = {}
-  info.onAdd = function(map) {
+  var sal = {};
+  info.onAdd = function (map) {
     this._div = L.DomUtil.create('div', 'info'); // create a div with a class "info"
     this.update();
     return this._div;
   };
   var zone = '';
   // method that we will use to update the control based on feature properties passed
-  info.update = function(props) {
+  info.update = function (props) {
     if (typeof props !== 'undefined') {
       var targetUrl;
       var exec_request = false;
@@ -135,7 +136,7 @@ $(document).ready(function() {
         });
         if (hashurlopenfisca.zfu != hash(targetUrl)) {
           exec_request = true;
-          hashurlopenfisca.zfu = hash(targetUrl)
+          hashurlopenfisca.zfu = hash(targetUrl);
         }
       } else {
         props.exo = 'Vous bénéficiez d\'exonérations fiscales et sociales';
@@ -149,7 +150,6 @@ $(document).ready(function() {
             exec_request = true;
             hashurlopenfisca.ber = hash(targetUrl);
           }
-
         }
         if (props.zrr == true) {
           props.title += ' ZRR ';
@@ -182,28 +182,26 @@ $(document).ready(function() {
         request.open('get', targetUrl);
 
         var data;
-        request.onload = (function() {
-          if (request.status != 200)
-            throw request;
+        request.onload = (function () {
+          if (request.status != 200) throw request;
 
           data = JSON.parse(request.responseText);
           sal[zone] = data.values.salsuperbrut;
         }).bind(this);
 
-        request.onerror = function() {
+        request.onerror = function () {
           throw request;
-        }
+        };
         request.send();
       }
 
       var new_sal = sal[zone];
 
       props.salaire = new_sal.toFixed(2);
-      props.cout = Math.round((new_sal / old_sal) * 100);
+      props.cout = Math.round(new_sal / old_sal * 100);
       var source = $("#zonage-info").html();
       var template = Handlebars.compile(source);
       this._div.innerHTML = template(props);
-
     } else {
       $("select[name='zone_franche_urbaine'] option[value='false']").attr('selected', 'selected');
       $("select[name='bassin_emploi_redynamiser'] option[value='false']").attr('selected', 'selected');
@@ -215,7 +213,7 @@ $(document).ready(function() {
 
   info.addTo(map);
 
-  function style(feature) {
+  function style() {
     return {
       fillColor: '#FC4E2A',
       weight: 1,
@@ -237,9 +235,7 @@ $(document).ready(function() {
     if (typeof e.layer == 'undefined') {
       var layer = e.target;
     } else {
-      if (typeof e.layer.feature != 'undefined')
-        var layer = e.layer;
-      else {
+      if (typeof e.layer.feature != 'undefined') var layer = e.layer;else {
         var layer = e.target;
       }
     }
@@ -279,7 +275,7 @@ $(document).ready(function() {
   }
 
   function loadGeoJson(data) {
-    geojsonLayerWells = new L.GeoJSON(data, {
+    geojsonLayerZfu = new L.GeoJSON(data, {
       style: style,
       onEachFeature: onEachFeature
     });
@@ -287,7 +283,8 @@ $(document).ready(function() {
   };
 
   function resetHighlight(e) {
-    geojsonLayerWells.resetStyle(e.target);
+    e.target.setStyle(style());
+    window.debug = e.target;
     info.update();
   }
 
@@ -297,5 +294,5 @@ $(document).ready(function() {
 
   map.invalidateSize(false);
 
-  map.on('moveend', function() {});
-})
+  map.on('moveend', function () {});
+});
